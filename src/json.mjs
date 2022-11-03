@@ -2,23 +2,23 @@ import sha256File from "sha256-file";
 import { readFile, writeFileSync } from "node:fs";
 import { Parser } from "json2csv";
 
-
+// get the sha256 fir the json taking the json path
 export const shaSum = (filePath) => sha256File(filePath);
 
-function arrayToCSV(data) {
-  const csv = data.map((row) => Object.values(row));
-  csv.unshift(Object.keys(data[0]));
-  return `"${csv.join('"\n"').replace(/,/g, '","')}"`;
-}
+// function arrayToCSV(data) {
+//   const csv = data.map((row) => Object.values(row));
+//   csv.unshift(Object.keys(data[0]));
+//   return `"${csv.join('"\n"').replace(/,/g, '","')}"`;
+// }
 
-async function writeCSV(fileName, data) {
-  try {
-    await writeFileSync(fileName, data);
-  } catch (err) {
-    console.log(err);
-    process.exit(1);
-  }
-}
+// async function writeCSV(fileName, data) {
+//   try {
+//     await writeFileSync(fileName, data);
+//   } catch (err) {
+//     console.log(err);
+//     process.exit(1);
+//   }
+// }
 
 function jsonReader(filePath, cb) {
   readFile(filePath, (err, fileData) => {
@@ -39,18 +39,22 @@ export const data = async (filePath, fileName, sha) => {
       if (err) {
         console.log(err);
         return;
-      }
-
+      }{
+        
+      if(process.argv[3]){
       data[0]["sha256"] = sha;
+     
       const dat = async () => data;
        let newData = JSON.stringify(data);
-      writeFileSync(`${fileName}.json`, newData);
+
+      writeFileSync(`${fileName}.json`, (newData));
 
       let fields = Object.keys(data[0])
       let opts ={ fields }
       try {
         const parser = new Parser(opts);
         const csv = parser.parse(data[0]);
+        console.log(data[0])
         writeFileSync(`${fileName}.output.csv`, csv)
       } catch (err) {
         console.error(err);
@@ -77,6 +81,27 @@ export const data = async (filePath, fileName, sha) => {
 
       // write();
       
-      return data;
-    });
+      return newData;}
+      else{
+        data["sha256"] = sha;
+        const dat =  () => [data];
+         let newData = JSON.stringify(dat());
+        writeFileSync(`${fileName}.json`, (newData));
+  
+        let fields = Object.keys(data)
+        let opts ={ fields }
+        const rawData = [data]
+        const jsonData = JSON.stringify(rawData)
+      console.log(data)
+        try {
+          const parser = new Parser(opts);
+          const csv = parser.parse(data);
+          
+          writeFileSync(`${fileName}.output.csv`, csv)
+        } catch (err) {
+          console.error(err);
+        }
+        
+      }
+    }});
 };

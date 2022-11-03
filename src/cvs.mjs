@@ -2,9 +2,9 @@ import pkg from "csvtojson";
 const CSVToJSON = pkg;
 import { writeFileSync } from "node:fs";
 
-//convert users.csv file to JSON array
-let newFile = process.argv[3];
 
+// takes filePath and fileName if there's any 
+// then converts it to json and returns the json path
 export const convertCvsToJson = async (cvs, newFile) => {
   try {
     const data = await CSVToJSON().fromFile(`${cvs}.csv`);
