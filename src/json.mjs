@@ -1,5 +1,7 @@
 import sha256File from "sha256-file";
-import { readFile, writeFile, writeFileSync } from "node:fs";
+import { readFile, writeFileSync } from "node:fs";
+import { Parser } from "json2csv";
+
 
 export const shaSum = (filePath) => sha256File(filePath);
 
@@ -39,32 +41,42 @@ export const data = async (filePath, fileName, sha) => {
         return;
       }
 
-      data["sha256"] = sha;
+      data[0]["sha256"] = sha;
       const dat = async () => data;
-      let newData = JSON.stringify(data);
+       let newData = JSON.stringify(data);
       writeFileSync(`${fileName}.json`, newData);
-      const write = async () => {
-        const data = await dat();
-        const {attributes, collection } = data;
-        if(attributes==undefined){
-          data.attributes=''
-        }else{
-          data.attributes=JSON.stringify(data.attributes)
-        }
-        if(collection==undefined) {
-          data.collection=''
-        }else{
-          data.collection=JSON.stringify(data.collection)
-        }
 
+      let fields = Object.keys(data[0])
+      let opts ={ fields }
+      try {
+        const parser = new Parser(opts);
+        const csv = parser.parse(data[0]);
+        writeFileSync(`${fileName}.csv`, csv)
+      } catch (err) {
+        console.error(err);
+      }
+      
+      // console.log(dat())
+      // const write = async () => {
+      //   const data = await dat();
+      //   const {attributes, collection } = data;
+      //   if(attributes==undefined){
+      //     data.attributes=''
+      //   }else{
+      //     data.attributes=JSON.stringify(data.attributes)
+      //   }
+      //   if(collection==undefined) {
+      //     data.collection=''
+      //   }else{
+      //     data.collection=JSON.stringify(data.collection)
+      //   }
+      //   const CSV = arrayToCSV([data]);
+      //   writeCSV(`${fileName}.output.csv`, CSV);
+      //   console.log(`Successfully converted ${fileName}!`);
+      // };
 
-        console.log(attributes,collection, 'wwk')
-        const CSV = arrayToCSV([data]);
-        writeCSV(`${fileName}.output.csv`, CSV);
-        console.log(`Successfully converted ${fileName}!`);
-      };
-
-      write();
-      return newData;
+      // write();
+      
+      return data;
     });
 };
