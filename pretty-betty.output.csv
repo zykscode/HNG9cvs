@@ -1,0 +1,2 @@
+"format","fileName","name","description","sensitive_content","series_number","series_total","attributes","collection","sha256"
+"CHIP-0007","pretty-betty","pretty betty","Betty is always proud of her beauty.","false","404","5","[{"trait_type":"gender"",""value":"female"}]","{"name":"pretty betty"",""id":"6a4f5b7c-914d-42c5-8e5f-d1c34ca48886"",""attributes":[null","null]}","ef89604949b9317fa9fc6d5b514095a263bbf32918fe9d1cbcd89a546189dfc8"

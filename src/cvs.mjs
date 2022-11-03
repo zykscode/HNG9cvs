@@ -6,8 +6,9 @@ import { writeFileSync } from "node:fs";
 
 
 //convert users.csv file to JSON array
+let newFile = process.argv[3]
 
-export const convertCvsToJson = async (cvs, fileName) => {
+export const convertCvsToJson = async (cvs, newFile) => {
   try {
     const data = await CSVToJSON().fromFile(`${cvs}.csv`);
     const length = data.length;
@@ -25,18 +26,20 @@ export const convertCvsToJson = async (cvs, fileName) => {
       
       return a
     })
-    if(fileName){
-    let fileNameJson = json.filter((obj)=>obj.fileName==fileName)
+    if(newFile){
+    let fileNameJson = json.filter((obj)=>obj.fileName==newFile)
     writeFileSync(
-      `${fileName}.json`,
+      `${newFile}.json`,
       JSON.stringify(fileNameJson)
       
     );
-    return `${fileName}.json`}{
-      
-      writeFileSync(`${process.argv[2]}.json`,
-      JSON.stringify(json))
-      return `${process.argv[2]}.json`
+    return `${newFile}.json`}
+    else{
+      const a =  () => newJson.map( (js)=>{
+       writeFileSync(`${js.fileName}.json`, JSON.stringify(js))
+       return js.fileName
+      })
+      return a()
     }
   } catch (err) {
     console.log(err);

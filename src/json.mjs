@@ -32,20 +32,34 @@ function jsonReader(filePath, cb) {
   });
 }
 export const data = async (filePath, fileName, sha) => {
-  if (fileName) {
+ 
     jsonReader(filePath, (err, data) => {
       if (err) {
         console.log(err);
         return;
       }
 
-      data[0]["sha256"] = sha;
+      data["sha256"] = sha;
       const dat = async () => data;
       let newData = JSON.stringify(data);
       writeFileSync(`${fileName}.json`, newData);
       const write = async () => {
         const data = await dat();
-        const CSV = arrayToCSV(data);
+        const {attributes, collection } = data;
+        if(attributes==undefined){
+          data.attributes=''
+        }else{
+          data.attributes=JSON.stringify(data.attributes)
+        }
+        if(collection==undefined) {
+          data.collection=''
+        }else{
+          data.collection=JSON.stringify(data.collection)
+        }
+
+
+        console.log(attributes,collection, 'wwk')
+        const CSV = arrayToCSV([data]);
         writeCSV(`${fileName}.output.csv`, CSV);
         console.log(`Successfully converted ${fileName}!`);
       };
@@ -53,31 +67,4 @@ export const data = async (filePath, fileName, sha) => {
       write();
       return newData;
     });
-  }
-  {
-    jsonReader(filePath, (err, data) => {
-      if (err) {
-        console.log(err);
-        return;
-      }
-
-      const dat = async () =>
-        data.map((obj) => {
-          obj["sha256"] = sha;
-          return obj;
-        });
-      let newData = JSON.stringify(data);
-      const filename = fileName ? fileName : process.argv[2];
-      writeFileSync(`${filename}.json`, newData);
-      const write = async () => {
-        const data = await dat();
-        const CSV = arrayToCSV(data);
-        writeCSV(`${filename}.output.csv`, CSV);
-        console.log(`Successfully converted ${filename}!`);
-      };
-
-      write();
-      return newData;
-    });
-  }
 };
