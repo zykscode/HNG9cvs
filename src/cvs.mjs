@@ -11,7 +11,8 @@ export const convertCvsToJson = async (cvs, fileName) => {
   try {
     const data = await CSVToJSON().fromFile(`${cvs}.csv`);
     const length = data.length;
-    let jayson = data.map((object) => convertCvsToCHIP(object, length));
+   
+    let jayson = data.map( (object) => convertCvsToCHIP(object, length));
     let groups = jayson.filter((obj) => isNaN(obj["series_number"]));
     const teamNames = iterGroup(groups);
     let json = jayson.filter((obj) => !isNaN(obj["series_number"]));
@@ -24,13 +25,19 @@ export const convertCvsToJson = async (cvs, fileName) => {
       
       return a
     })
+    if(fileName){
     let fileNameJson = json.filter((obj)=>obj.fileName==fileName)
     writeFileSync(
       `${fileName}.json`,
       JSON.stringify(fileNameJson)
       
     );
-    return `${fileName}.json`
+    return `${fileName}.json`}{
+      
+      writeFileSync(`${process.argv[2]}.json`,
+      JSON.stringify(json))
+      return `${process.argv[2]}.json`
+    }
   } catch (err) {
     console.log(err);
   }
@@ -52,18 +59,21 @@ const iterGroup = (group) => {
 
 const convertCvsToCHIP = (object, length) => {
   const { Name, Description, Filename, Gender, UUID, Attributes } = object;
-  const series_number = object["Series Number"];
+  const series_number = object["Series Number"]; 
+ let attObj = []
+    
+ if(Attributes){
   const arr = Attributes.split(",");
   const newArr = arr.map((a) => {
     return a.split(":");
-  });
-  const attObj = newArr.map((a) => {
-    let obj = {};
-    
+  }); 
+  let obj = {};
+  attObj = newArr.map((a) => {
+   
     obj["type"] = ()=> a[0]?a[0]:'';
     obj["kind"] = ()=> a[1]?a[1]:'';
-    return obj;
-  });
+    
+  })}
 
   return {
     format: "CHIP-0007",
