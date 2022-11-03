@@ -48,6 +48,12 @@ export const data = async (filePath, fileName, sha) => {
        let newData = JSON.stringify(data);
 
       writeFileSync(`${fileName}.json`, (newData));
+      const {attributes, collection} = data[0]
+        const collect = `${collection.name}:${collection.id}`
+        const att = attributes.map((a)=>`${a.type}:${a.kind}`)
+const attribute = att.toString().replaceAll(',',(';'))
+data[0].collection = collect
+data[0].attributes = attribute
 
       let fields = Object.keys(data[0])
       let opts ={ fields }
@@ -91,8 +97,14 @@ export const data = async (filePath, fileName, sha) => {
         let fields = Object.keys(data)
         let opts ={ fields }
         const rawData = [data]
+        const {attributes, collection} = data
+        const collect = `${collection.name}:${collection.id}`
+        const att = attributes.map((a)=>`${a.type}:${a.kind}`)
+const attribute = att.toString().replaceAll(',',(';'))
+data.collection = collect
+data.attributes = attribute
         const jsonData = JSON.stringify(rawData)
-      console.log(data)
+      
         try {
           const parser = new Parser(opts);
           const csv = parser.parse(data);
