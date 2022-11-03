@@ -51,7 +51,7 @@ export const data = async (filePath, fileName, sha) => {
       try {
         const parser = new Parser(opts);
         const csv = parser.parse(data[0]);
-        writeFileSync(`${fileName}.csv`, csv)
+        writeFileSync(`${fileName}.output.csv`, csv)
       } catch (err) {
         console.error(err);
       }
