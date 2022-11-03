@@ -60,7 +60,6 @@ data[0].attributes = attribute
       try {
         const parser = new Parser(opts);
         const csv = parser.parse(data[0]);
-        console.log(data[0])
         writeFileSync(`${fileName}.output.csv`, csv)
       } catch (err) {
         console.error(err);
